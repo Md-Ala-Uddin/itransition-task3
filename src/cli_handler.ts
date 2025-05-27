@@ -7,7 +7,7 @@ export class CliHandler {
     allOptions: Record<string, string>;
     counter: number;
     rl: readline.Interface;
-    static activeReadlines = 0; // Static counter for active readline instances
+    static activeReadlines = new Set<readline.Interface>();
 
     constructor(diceArray: Dice[]) {
         this.diceArray = diceArray;
@@ -17,6 +17,7 @@ export class CliHandler {
             input: process.stdin,
             output: process.stdout,
         });
+        CliHandler.activeReadlines.add(this.rl);
     }
 
     async prompt(question: string): Promise<string> {
@@ -34,6 +35,8 @@ export class CliHandler {
                     console.log(
                         "You entered wrong choices more than three times, exiting..."
                     );
+                    this.closeReadline();
+                    CliHandler.closeAllReadlines();
                     process.exit(0);
                 }
 
@@ -44,7 +47,8 @@ export class CliHandler {
 
             if (ans === "x") {
                 console.log("exiting...");
-                this.rl.close();
+                this.closeReadline();
+                CliHandler.closeAllReadlines();
                 process.exit(0);
             } else if (ans === "?") {
                 this.showHelp();
@@ -78,5 +82,17 @@ export class CliHandler {
 
     showHelp(): void {
         TableRenderer.render(this.diceArray);
+    }
+
+    static closeAllReadlines(): void {
+        CliHandler.activeReadlines.forEach((rl) => rl.close());
+        CliHandler.activeReadlines.clear();
+    }
+
+    closeReadline(): void {
+        if (this.rl) {
+            this.rl.close();
+            CliHandler.activeReadlines.delete(this.rl);
+        }
     }
 }
