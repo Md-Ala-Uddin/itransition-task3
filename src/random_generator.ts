@@ -5,7 +5,7 @@ export class RandomGenerator {
         return crypto.randomBytes(32).toString('hex');
     }
 
-    static secureRandomInt(min, max) {
+    static secureRandomInt(min: number, max: number) {
         const range = max - min + 1;
         const bytesNeeded = Math.ceil(Math.log2(range) / 8);
         const maxValue = 2 ** (bytesNeeded * 8);

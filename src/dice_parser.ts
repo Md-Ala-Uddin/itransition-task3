@@ -1,7 +1,7 @@
 import { Dice } from "./dice.js";
 
 export class DiceParser {
-    static parseArgs(args) {
+    static parseArgs(args: string[]): Dice[] {
         const diceArgs = args.slice(2);
         if (diceArgs.length < 3) throw new Error("Atleast 3 dice are required");
         

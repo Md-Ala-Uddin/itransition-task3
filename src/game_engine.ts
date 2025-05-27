@@ -1,14 +1,16 @@
 import { CliHandler } from "./cli_handler.js";
 import { FairRandomProtocol } from "./fair_random_protocol.js";
-import { HMACGenerator } from "./hmac_generator.js";
 import { RandomGenerator } from "./random_generator.js";
+import { Dice } from "./dice.js";
 
 export class GameEngine {
-    constructor(diceArray) {
+    private diceArray: Dice[];
+
+    constructor(diceArray: Dice[]) {
         this.diceArray = diceArray;
     }
 
-    async start() {
+    async start(): Promise<void> {
         let cli = new CliHandler(this.diceArray);
         const first = await FairRandomProtocol.decideFirstMove(cli);
         console.log(`${first} go first`);
@@ -29,7 +31,7 @@ export class GameEngine {
                     remainingDice.map((die, i) => [i, die.faces.join(",")])
                 )
             );
-            const yourDie = remainingDice[yourDieIndex];
+            const yourDie = remainingDice[yourDieIndex as unknown as number];
 
             console.log(`Your selection: ${yourDieIndex}`);
             console.log(`Your choose the [${yourDie}] die`);
@@ -53,12 +55,12 @@ export class GameEngine {
                     this.diceArray.map((die, i) => [i, die.faces.join(",")])
                 )
             );
-            const yourDie = this.diceArray[yourDieIndex];
+            const yourDie = this.diceArray[yourDieIndex as unknown as number];
             console.log(`Your selection: ${yourDie}`);
             console.log(`You choose the ${yourDie} die`);
 
             const remainingDice = this.diceArray.filter(
-                (_, i) => i !== yourDieIndex
+                (_, i) => i !== yourDieIndex as unknown as number
             );
             console.log(`My turn`);
             const myDieIndex = RandomGenerator.secureRandomInt(

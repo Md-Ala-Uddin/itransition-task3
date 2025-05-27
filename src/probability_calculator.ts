@@ -1,5 +1,7 @@
+import { Dice } from "./dice.js";
+
 export class ProbabilityCalculator {
-    static winProbability(dieA, dieB) {
+    static winProbability(dieA: Dice, dieB: Dice): string {
         const ALL_POSSIBLE_MOVES = dieA.faces.length * dieB.faces.length; // 6 * 6 = 36
         let winCount = 0;
 

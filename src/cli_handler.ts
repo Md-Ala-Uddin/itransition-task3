@@ -1,10 +1,15 @@
 import readline from "readline";
 import { TableRenderer } from "./table_renderer.js";
+import { Dice } from "./dice.js";
 
 export class CliHandler {
+    diceArray: Dice[];
+    allOptions: Record<string, string>;
+    counter: number;
+    rl: readline.Interface;
     static activeReadlines = 0; // Static counter for active readline instances
 
-    constructor(diceArray) {
+    constructor(diceArray: Dice[]) {
         this.diceArray = diceArray;
         this.allOptions = {};
         this.counter = 0;
@@ -14,8 +19,8 @@ export class CliHandler {
         });
     }
 
-    async prompt(question) {
-        let ans = -1;
+    async prompt(question: string): Promise<string> {
+        let ans = '';
         while (true) {
             ans = await new Promise((resolve) => {
                 this.rl.question(question, (answer) => {
@@ -52,7 +57,7 @@ export class CliHandler {
         return ans;
     }
 
-    async askForChoice(question, options) {
+    async askForChoice(question: string, options: Record<string, string>): Promise<string> {
         this.allOptions = {
             ...options,
             x: "exit",
@@ -64,14 +69,14 @@ export class CliHandler {
         return input;
     }
 
-    prepareQuestion(question, options) {
+    prepareQuestion(question: string, options: Record<string, string>): string {
         const optionString = Object.entries(options)
             .map(([key, value]) => `${key}: ${value}`)
             .join("\n");
         return `${question}\n${optionString}\n`;
     }
 
-    showHelp() {
+    showHelp(): void {
         TableRenderer.render(this.diceArray);
     }
 }
